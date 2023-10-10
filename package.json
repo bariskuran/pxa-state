@@ -1,20 +1,17 @@
 {
     "name": "pxa-state",
-    "version": "0.0.1",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/bariskuran/pxa-state"
-    },
-    "description": "A state manager for ReactJs",
+    "version": "0.0.12",
+    "description": "Zustand - immer combination, the next-generation react state management package.",
     "main": "dist/index.js",
     "module": "dist/index.js",
     "keywords": [
-        "state",
-        "state manager",
-        "react",
-        "reactjs",
+        "zustand",
         "immer",
-        "zustand"
+        "state management",
+        "state manager",
+        "redux",
+        "apicontext",
+        "react"
     ],
     "files": [
         "dist",
@@ -23,27 +20,55 @@
     "author": "Baris Kuran <baris@thepxa.co.uk>",
     "private": false,
     "type": "module",
-    "scripts": {
-        "start": "vite --port 3000",
-        "build": "vite build"
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/bariskuran/pxa-state"
     },
-    "dependencies": {
-        "immer": "^10.0.2",
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files"
+    },
+    "dependencies": {},
+    "peerDependencies": {
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "zustand": "^4.4.1"
+        "react-scripts": "5.0.1"
     },
     "devDependencies": {
-        "@vitejs/plugin-react-swc": "^3.4.0",
-        "core-js": "^3.32.2",
-        "eslint": "^8.49.0",
-        "eslint-config-react-app": "^7.0.1",
-        "eslint-plugin-react": "^7.33.2",
+        "@babel/cli": "^7.20.7",
+        "@babel/core": "^7.20.12",
+        "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+        "@babel/preset-env": "^7.20.2",
+        "@babel/preset-react": "^7.22.15",
+        "autoprefixer": "^10.4.13",
+        "core-js": "^3.27.1",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-react": "^7.31.11",
         "eslint-plugin-react-hooks": "^4.6.0",
-        "jest": "^29.7.0",
-        "jest-environment-jsdom": "^29.7.0",
-        "prettier": "^3.0.3",
-        "vite": "^4.4.5",
-        "vite-plugin-eslint": "^1.8.1"
+        "prettier": "^2.8.1",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-scripts": "5.0.1"
+    },
+    "resolutions": {
+        "react-error-overlay": "6.0.9",
+        "browserslist": "4.21.9",
+        "caniuse-lite": "1.0.30001515"
+    },
+    "engines": {
+        "node": ">=8.16",
+        "npm": ">=6"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
     }
 }
