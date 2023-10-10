@@ -1,6 +1,6 @@
 {
     "name": "pxa-state",
-    "version": "0.0.13",
+    "version": "0.0.14",
     "description": "Zustand - immer combination, the next-generation react state management package.",
     "main": "dist/index.js",
     "module": "dist/index.js",
@@ -24,7 +24,7 @@
         "type": "git",
         "url": "git://github.com/bariskuran/pxa-state"
     },
-    "homepage": "https://www.pxa.co.uk/",
+    "homepage": "https://www.thepxa.co.uk/",
     "scripts": {
         "start": "react-scripts start",
         "build": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files"
