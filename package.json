@@ -1,6 +1,10 @@
 {
     "name": "pxa-state",
-    "version": "0.0.19",
+    "version": "0.0.200",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/bariskuran/pxa-state"
+    },
     "description": "Zustand - immer combination, the next-generation react state management package.",
     "main": "dist/index.js",
     "module": "dist/index.js",
@@ -19,11 +23,6 @@
     ],
     "author": "Baris Kuran <baris@thepxa.co.uk>",
     "private": false,
-    "type": "module",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/bariskuran/pxa-state"
-    },
     "homepage": "https://www.thepxa.co.uk/",
     "scripts": {
         "start": "react-scripts start",
@@ -31,7 +30,8 @@
     },
     "dependencies": {},
     "peerDependencies": {
-        "react": "^18.2.0"
+        "react": "^18.2.0",
+        "react-scripts": "5.0.1"
     },
     "devDependencies": {
         "@babel/cli": "^7.20.7",
