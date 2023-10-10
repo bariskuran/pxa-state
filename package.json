@@ -1,6 +1,6 @@
 {
     "name": "pxa-state",
-    "version": "0.0.15",
+    "version": "0.0.17",
     "description": "Zustand - immer combination, the next-generation react state management package.",
     "main": "dist/index.js",
     "module": "dist/index.js",
@@ -19,7 +19,7 @@
     ],
     "author": "Baris Kuran <baris@thepxa.co.uk>",
     "private": false,
-    "type": "module",
+    "type": "commonjs",
     "repository": {
         "type": "git",
         "url": "git://github.com/bariskuran/pxa-state"
