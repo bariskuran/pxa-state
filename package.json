@@ -1,6 +1,6 @@
 {
     "name": "pxa-state",
-    "version": "0.0.209",
+    "version": "0.0.211",
     "description": "Zustand - immer combination, the next-generation react state management package.",
     "keywords": [
         "zustand",
@@ -18,15 +18,14 @@
         "type": "git",
         "url": "git://github.com/bariskuran/pxa-state"
     },
-    "main": "src/index.jsx",
-    "module": "src/index.jsx",
+    "main": "dist/index.jsx",
+    "module": "dist/index.jsx",
     "files": [
         "dist",
         "README.md"
     ],
     "scripts": {
-        "build": "NODE_ENV=production babel src --out-dir src --copy-files",
-        "build2": "rm -rf src && NODE_ENV=production babel src --out-dir src --copy-files"
+        "build": "NODE_ENV=production babel dist --out-dir dist --copy-files"
     },
     "dependencies": {
         "immer": "^10.0.2",
