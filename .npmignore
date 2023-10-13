@@ -1,6 +1,9 @@
 /src
 .babelrc
 webpack.config.js
+.eslinktrc.cjs
+.gitignore
+.prettierrc.cjs
 
 # dependencies
 /node_modules
