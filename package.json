@@ -1,6 +1,6 @@
 {
     "name": "pxa-state",
-    "version": "0.0.211",
+    "version": "0.0.213",
     "description": "Zustand - immer combination, the next-generation react state management package.",
     "keywords": [
         "zustand",
@@ -18,14 +18,15 @@
         "type": "git",
         "url": "git://github.com/bariskuran/pxa-state"
     },
-    "main": "dist/index.jsx",
-    "module": "dist/index.jsx",
+    "main": "dist/index.js",
+    "module": "src/index.js",
     "files": [
         "dist",
         "README.md"
     ],
     "scripts": {
-        "build": "NODE_ENV=production babel dist --out-dir dist --copy-files"
+        "build": "rm -rf dist && NODE_ENV=production babel src --out-dir dist --copy-files",
+        "build2": "NODE_ENV=production babel dist --out-dir dist --copy-files"
     },
     "dependencies": {
         "immer": "^10.0.2",
@@ -38,10 +39,11 @@
     "devDependencies": {
         "@babel/cli": "^7.20.7",
         "@babel/core": "^7.20.12",
-        "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+        "@babel/plugin-transform-private-property-in-object": "^7.22.11",
         "@babel/preset-env": "^7.20.2",
         "@babel/preset-react": "^7.22.15",
         "babel-loader": "^8.0.6",
+        "core-js": "^3.32.2",
         "eslint": "^8.49.0",
         "eslint-config-react-app": "^7.0.1",
         "eslint-plugin-react": "^7.33.2",
