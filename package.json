@@ -1,6 +1,6 @@
 {
     "name": "pxa-state",
-    "version": "0.0.213",
+    "version": "0.0.214",
     "description": "Zustand - immer combination, the next-generation react state management package.",
     "keywords": [
         "zustand",
@@ -19,7 +19,7 @@
         "url": "git://github.com/bariskuran/pxa-state"
     },
     "main": "dist/index.js",
-    "module": "src/index.js",
+    "module": "dist/index.js",
     "files": [
         "dist",
         "README.md"
