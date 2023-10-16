@@ -86,7 +86,7 @@ pnpm i pxa-state
 
 # Using usePxaState
 
-### 1- First, import usePxaState
+### 1.First, import usePxaState
 
 ```js
 import { usePxaState } from "pxa-state";
@@ -115,7 +115,7 @@ const state = usePxaState({
 // result: {city:"London",postCode:"n2", street:"Twyford Avenue"}
 ```
 
-### 3- If you wish, change immutable key name (default is "value")
+### 3- If you wish, change immutable key name (default is "value")
 
 ```js
 const state = usePxaState("test string", {
@@ -124,7 +124,7 @@ const state = usePxaState("test string", {
 // result: {data:"test string"}
 ```
 
-### 4- If you need, add your functions
+### 4- If you need, add your functions
 
 ```js
 const state = usePxaState(
@@ -142,14 +142,16 @@ You can access this functions via state when you need them. For example:
 state.anotherFunction(arg3, arg4, arg5);
 ```
 
-### 5- Get Method
+### 5- Get Method
+
 TBH, you don't need to use this function much but, if you do:
 
 ```js
 state.get();
 ```
 
-### 6- Set Method
+### 6- Set Method
+
 If your data is immutable, you need to set it via immutableKeyName. **"value"** is default.
 
 ```js
@@ -185,12 +187,14 @@ state.set((state) => ({
 }));
 ```
 
-### 7- immerSet Method
+### 7- immerSet Method
+
 immerSet is original setImmer function without any change. Check out useImmer documantation for more info.
 
 # Using usePxaContext
 
-### 1- Set a global context
+### 1- Set a global context
+
 Its usage almost same with usePxaState. Check out usePxaState features above. You can use them all in pxaContext.
 
 ```js
@@ -205,7 +209,7 @@ export const globalContext = createPxaContext(
 );
 ```
 
-### 2- Accessing a global context
+### 2- Accessing a global context
 
 > [!IMPORTANT]
 > To use pxa-state effectively, you should only fetch the data you need.
@@ -259,8 +263,12 @@ import { useImmer, useImmerReducer } from "pxa-state";
 
 # Credits
 
-[Immer](https://github.com/immerjs/immer) | [Zustand](https://github.com/pmndrs/zustand) | [ThePxa Creative](https://www.thepxa.co.uk/) | [Baris Kuran](https://www.bariskuran.com/)
+[ThePxa Creative](https://www.thepxa.co.uk/) | [Baris Kuran](https://www.bariskuran.com/)
+
+# Dependencies
+
+[Immer](https://github.com/immerjs/immer) | [Zustand](https://github.com/pmndrs/zustand)
 
 # License
 
-Not yet. Am on it.
+MIT
