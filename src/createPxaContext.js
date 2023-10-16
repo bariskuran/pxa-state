@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { setState } from "./tools/setState";
+import { setState } from "./tools/functions";
 import { createPxaClass } from "./tools/createPxaClass";
 
 const createPxaContext = (initialValue, settings) => {

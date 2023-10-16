@@ -1,4 +1,5 @@
 import { typeOf } from "./functions";
+import { useSetX } from "./useSetX";
 
 export const createPxaClass = (states) => {
     const { data, IMMUTABLE_NAME, ADD_FN, externalSet, externalGet } = states || {};
@@ -17,12 +18,13 @@ export const createPxaClass = (states) => {
             // Additional functions
             ADD_FN &&
                 Object.entries(ADD_FN).forEach(([fnName, fn]) => {
-                    this[fnName] = (...args) => fn({ state: this }, ...args);
+                    this[fnName] = (...args) => fn(this, ...args);
                 });
         }
 
         // Default functions
-        set = (incoming) => externalSet(incoming);
+        set = (incoming) => externalSet(useSetX(externalGet(), incoming));
+        immerSet = (incoming) => externalSet(incoming);
         get = () => externalGet();
     }
 

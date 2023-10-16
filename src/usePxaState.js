@@ -1,7 +1,6 @@
 import { useCallback, useRef, useState, useMemo } from "react";
-import { freezedState } from "./tools/functions";
+import { freezedState, setState } from "./tools/functions";
 import { createPxaClass } from "./tools/createPxaClass";
-import { setState } from "./tools/setState";
 
 export const usePxaState = (initialState, settings = {}) => {
     /**

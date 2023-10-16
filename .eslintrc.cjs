@@ -11,7 +11,12 @@ module.exports = {
         es2021: true,
     },
     root: true,
-    extends: ["eslint:recommended", "plugin:react/recommended", "plugin:react/jsx-runtime", "plugin:react-hooks/recommended"],
+    extends: [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:react/jsx-runtime",
+        "plugin:react-hooks/recommended",
+    ],
     ignorePatterns: ["dist", ".eslintrc.cjs"],
     overrides: [
         {
@@ -30,6 +35,7 @@ module.exports = {
     },
     plugins: ["react", "react-hooks"],
     rules: {
+        "no-var": "error",
         "no-unused-vars": "warn",
         "react-hooks/exhaustive-deps": "off",
         "react/jsx-no-undef": "error",

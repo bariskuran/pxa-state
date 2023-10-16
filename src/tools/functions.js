@@ -1,4 +1,4 @@
-import { freeze } from "immer";
+import { produce, freeze } from "immer";
 
 /**
  * @param {any} value
@@ -25,9 +25,25 @@ export const immuToMu = (data, IMMUTABLE_NAME) => (typeOf(data) === "object" ? d
  * @param {string} IMMUTABLE_NAME
  * @returns immutable object
  */
-export const muToImmu = (data, IMMUTABLE_NAME) => (typeOf(data) === "object" && Object.keys(data).length < 2 ? data[IMMUTABLE_NAME] : data);
+export const muToImmu = (data, IMMUTABLE_NAME) =>
+    typeOf(data) === "object" && Object.keys(data).length < 2 ? data[IMMUTABLE_NAME] : data;
 
 /**
  * Freezed for immer
  */
 export const freezedState = (data) => freeze(typeof data === "function" ? data() : data, true);
+
+/**
+ *
+ * @description This function generates new data and saves it.
+ * @returns immuData
+ */
+export const setState = (immerFn, dataRef, IMMUTABLE_NAME, setData) => {
+    const pro = () => produce(immuToMu(dataRef?.current, IMMUTABLE_NAME), immerFn);
+    const fre = () => freeze(immerFn);
+    const newData = typeof immerFn === "function" ? pro() : fre();
+    const immuData = muToImmu(newData, IMMUTABLE_NAME);
+    if (dataRef) dataRef.current = immuData;
+    if (setData) setData(immuData);
+    return immuData;
+};
