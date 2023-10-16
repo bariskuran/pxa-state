@@ -2,7 +2,7 @@
     "main2": "src/index.js",
     "main": "dist/index.js",
     "name": "pxa-state",
-    "version": "0.0.22",
+    "version": "0.0.30",
     "keywords": [
         "zustand",
         "immer",
@@ -22,6 +22,7 @@
         "type": "git",
         "url": "git://github.com/bariskuran/pxa-state"
     },
+    "license": "MIT",
     "files": [
         "dist",
         "README.md"
