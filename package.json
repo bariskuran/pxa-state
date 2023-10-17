@@ -1,6 +1,6 @@
 {
-    "main2": "src/index.js",
-    "main": "dist/index.js",
+    "main": "src/index.js",
+    "main2": "dist/index.js",
     "name": "pxa-state",
     "version": "0.0.30",
     "keywords": [
