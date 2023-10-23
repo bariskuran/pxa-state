@@ -21,34 +21,51 @@ var useSetX = exports.useSetX = function useSetX() {
   var curr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var incoming = arguments.length > 1 ? arguments[1] : undefined;
   var type = (0, _functions.typeOf)(incoming);
-  if (type !== "object" && type !== "function") throw new Error("setX only accepts objects or functions: " + type);
-  //
+  if (type !== "object" && type !== "function") {
+    return incoming;
+  }
   var newState = _objectSpread({}, curr);
   if (type === "object") {
-    for (var _i = 0, _Object$entries = Object.entries(incoming); _i < _Object$entries.length; _i++) {
-      var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
-        path = _Object$entries$_i[0],
-        value = _Object$entries$_i[1];
-      setNestedValue(newState, path, value);
-    }
+    Object.entries(incoming).forEach(function (_ref) {
+      var _ref2 = _slicedToArray(_ref, 2),
+        path = _ref2[0],
+        value = _ref2[1];
+      var splittedPath = (path === null || path === void 0 ? void 0 : path.split(".")) || ["undefinedPath"];
+      newState = setNestedValue(newState, splittedPath, value);
+    });
   } else {
-    var response = incoming(curr);
-    for (var _i2 = 0, _Object$entries2 = Object.entries(response); _i2 < _Object$entries2.length; _i2++) {
-      var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i2], 2),
-        _path = _Object$entries2$_i[0],
-        _value = _Object$entries2$_i[1];
-      setNestedValue(newState, _path, _value);
-    }
+    Object.entries(incoming(curr)).forEach(function (_ref3) {
+      var _ref4 = _slicedToArray(_ref3, 2),
+        path = _ref4[0],
+        value = _ref4[1];
+      var splittedPath = (path === null || path === void 0 ? void 0 : path.split(".")) || ["undefinedPath"];
+      newState = setNestedValue(newState, splittedPath, value);
+    });
   }
   return newState;
 };
-var setNestedValue = function setNestedValue(state, path, value) {
-  var keys = path.split(".");
-  keys.reduce(function (obj, key, index) {
-    if (index === keys.length - 1) obj[key] = value;else {
-      obj[key] = obj[key] || {};
-      return obj[key];
+var setNestedValue = function setNestedValue(state, splittedPath, newval) {
+  if (splittedPath.length > 1) {
+    var field = splittedPath.shift();
+    var subObject = {};
+    try {
+      subObject = _objectSpread({}, setNestedValue(state[field], splittedPath, newval));
+    } catch (_unused) {
+      subObject = _objectSpread({}, setNestedValue(state, splittedPath, newval));
     }
-    return obj;
-  }, state);
+    return removeUndefined(_objectSpread(_objectSpread({}, state), {}, _defineProperty({}, field, subObject)));
+  } else {
+    var updatedState = {};
+    updatedState[splittedPath.shift()] = newval;
+    return _objectSpread(_objectSpread({}, state), updatedState);
+  }
+};
+var removeUndefined = function removeUndefined(obj) {
+  for (var prop in obj) {
+    if (_typeof(obj[prop]) === "object") {
+      obj[prop] = removeUndefined(obj[prop]);
+      if (Object.keys(obj[prop]).length === 0) delete obj[prop];
+    } else if (obj[prop] === undefined) delete obj[prop];
+  }
+  return obj;
 };

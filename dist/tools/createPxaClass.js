@@ -25,7 +25,9 @@ var createPxaClass = exports.createPxaClass = function createPxaClass(states) {
     IMMUTABLE_NAME = _ref.IMMUTABLE_NAME,
     ADD_FN = _ref.ADD_FN,
     externalSet = _ref.externalSet,
-    externalGet = _ref.externalGet;
+    externalGet = _ref.externalGet,
+    externalGetPrevious = _ref.externalGetPrevious,
+    externalPrepareContext = _ref.externalPrepareContext;
 
   /**
    * Class
@@ -36,14 +38,23 @@ var createPxaClass = exports.createPxaClass = function createPxaClass(states) {
     var _this = this;
     _classCallCheck(this, PxaState);
     // Default functions
-    _defineProperty(this, "set", function (incoming) {
-      return externalSet((0, _useSetX.useSetX)(externalGet(), incoming));
-    });
     _defineProperty(this, "immerSet", function (incoming) {
-      return externalSet(incoming);
+      externalSet(incoming);
+    });
+    _defineProperty(this, "set", function (incoming) {
+      var curr = (0, _functions.immuToMu)(externalGet(), IMMUTABLE_NAME);
+      var setX = (0, _useSetX.useSetX)(curr, incoming);
+      externalSet(setX);
+    });
+    _defineProperty(this, "prepareContext", function (incoming, settings) {
+      var setX = (0, _useSetX.useSetX)(externalGet(), incoming);
+      externalPrepareContext(setX, settings);
     });
     _defineProperty(this, "get", function () {
-      return externalGet();
+      externalGet();
+    });
+    _defineProperty(this, "getPrevious", function () {
+      externalGetPrevious();
     });
     (0, _functions.typeOf)(value) === "object" ? Object.entries(value).forEach(function (_ref2) {
       var _ref3 = _slicedToArray(_ref2, 2),

@@ -9,6 +9,7 @@ module.exports = {
     env: {
         browser: true,
         es2021: true,
+        "jest/globals": true,
     },
     root: true,
     extends: [
@@ -33,8 +34,9 @@ module.exports = {
         ecmaVersion: "latest",
         sourceType: "module",
     },
-    plugins: ["react", "react-hooks"],
+    plugins: ["react", "react-hooks", "jest"],
     rules: {
+        "no-unreachable": "warn",
         "no-var": "error",
         "no-unused-vars": "warn",
         "react-hooks/exhaustive-deps": "off",
@@ -55,5 +57,10 @@ module.exports = {
         "require-await": "error",
         "space-before-function-paren": 0,
         "no-prototype-builtins": "warn",
+        "jest/no-disabled-tests": "warn",
+        "jest/no-focused-tests": "error",
+        "jest/no-identical-title": "error",
+        "jest/prefer-to-have-length": "warn",
+        "jest/valid-expect": "error",
     },
 };

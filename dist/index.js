@@ -21,6 +21,12 @@ Object.defineProperty(exports, "current", {
     return _immer.current;
   }
 });
+Object.defineProperty(exports, "findDifferences", {
+  enumerable: true,
+  get: function get() {
+    return _functions.findDifferences;
+  }
+});
 Object.defineProperty(exports, "freeze", {
   enumerable: true,
   get: function get() {
@@ -39,6 +45,12 @@ Object.defineProperty(exports, "produce", {
     return _immer.produce;
   }
 });
+Object.defineProperty(exports, "typeOf", {
+  enumerable: true,
+  get: function get() {
+    return _functions.typeOf;
+  }
+});
 Object.defineProperty(exports, "useImmer", {
   enumerable: true,
   get: function get() {
@@ -49,6 +61,12 @@ Object.defineProperty(exports, "useImmerReducer", {
   enumerable: true,
   get: function get() {
     return _useImmer.useImmerReducer;
+  }
+});
+Object.defineProperty(exports, "usePrepareContext", {
+  enumerable: true,
+  get: function get() {
+    return _usePrepareContext["default"];
   }
 });
 Object.defineProperty(exports, "usePxaContext", {
@@ -65,7 +83,9 @@ Object.defineProperty(exports, "usePxaState", {
 });
 var _usePxaState = _interopRequireDefault(require("./usePxaState"));
 var _createPxaContext = _interopRequireDefault(require("./createPxaContext"));
+var _usePrepareContext = _interopRequireDefault(require("./usePrepareContext"));
 var _usePxaContext = _interopRequireDefault(require("./usePxaContext"));
+var _functions = require("./tools/functions");
 var _zustand = require("zustand");
 var _immer = require("immer");
 var _useImmer = require("use-immer");

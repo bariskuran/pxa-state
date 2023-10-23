@@ -4,67 +4,9 @@
 
 # Introduction
 
+**pxa-state** is a React state management tool that combines the functionalities of zustand and immer libraries. Additionally, it facilitates usage to some extent by introducing new set and call methods. It can operate both local components and global components.
+
 This mini tool aims to address state management challenges in React. It was developed to address issues such as the complexity created by useState, the difficulty of using nested objects, the need to render all components covered by ContextApi, and the constant requirement to write reducers in the usage of global management solutions like Redux, all under one roof.
-
-In short, `pxa-state` is a React state management tool that combines the functionalities of zustand and immer libraries. Additionally, it facilitates usage to some extent by introducing new set and call methods. It can operate both local components and global components.
-
-# Conflicts and Solutions
-
-If you are working in a small-sized / medium-sized component and using useState for individual variables, duplications like [variable1, setVariable1] can become cumbersome after a point. If you attempt to manage your state by placing an object inside useState, updating properties at the 2nd level and beyond can become a pain. For example:
-
-```javascript
-const [nestedState, setNestedState] = useState({
-    person: {
-        contact: {
-            address: {
-                city: "London",
-            },
-        },
-    },
-});
-
-setNestedState((p) => {
-    return {
-        ...p,
-        person: {
-            ...p?.person,
-            contact: {
-                ...p?.person?.contact,
-                address: {
-                    ...p?.person?.contact?.address,
-                    city: "Istanbul",
-                },
-            },
-        },
-    };
-});
-```
-
-To solve that issue award-winning Immer has a great mutable solution:
-
-```javascript
-const [nestedState, setNestedState] = useImmer({
-    person: {
-        contact: {
-            address: {
-                city: "London",
-            },
-        },
-    },
-});
-
-setNestedState((draft) => {
-    draft.person.contact.address.city = "Istanbul";
-});
-```
-
-However, immer also comes with some usage challenges. 1- You cannot reach a data level that you haven't set up when setting up the state. Continuing from the example above, the command `draft.person.contact.address.street = "Twyford Avenue";` will not work because the `"street"` property has not been created before. 2- In immer, you need to specify which type you will work with from the beginning, and this type cannot be changed later. As in the example `const [state, setState] = useImmer({})`...
-
-I tried to address these issues with `usePxaState` and provided users with a new set method through a constructor. You can find the usage methods below.
-
-`usePxaContext` enables the creation of a global context and allows it to be used by all components without the need for a wrapper. It has two main advantages. Its accessibility and management are easier as it doesn't require any wrappers. Unlike React's Context API, which causes all components it encompasses to re-render, `usePxaContext` does not require components to use Context API. By incorporating additional features and a set method while simultaneously using Immer and Zustand, `usePxaContext` takes the convenience provided by these excellent libraries a step further.
-
-You can also use both hooks as a semi-reducer, placing your relevant functions inside the state. This way, you can simplify data management in your component.
 
 # Installing pxa-state
 
@@ -72,50 +14,125 @@ You can also use both hooks as a semi-reducer, placing your relevant functions i
 npm i pxa-state
 ```
 
-or
-
 ```node
 yarn add pxa-state
 ```
-
-or
 
 ```node
 pnpm i pxa-state
 ```
 
-# Using usePxaState
+# Basic Usage of usePxaState
 
-### 1.First, import usePxaState
+This function is used instead of _useState_.
+
+#### for immutable types
 
 ```js
 import { usePxaState } from "pxa-state";
+
+const Component = () => {
+    const {value, set} = usePxaState(123);
+	const fn = () => {
+		set(d=>({value: d.value + 1})
+	}
+
+// result: {value:123}
 ```
 
-### 2- Then Set up State
+> [!IMPORTANT]
+> Functions can not be used as an immutable varible!
 
-You can use any type (expect fn) inside pxaState. Or if you need to decide this later, you can leave it empty. Examples:
+#### for mutable types
 
 ```js
-const state = usePxaState("test string");
-// result: {value:"test string"}
+import { usePxaState } from "pxa-state";
+
+const Component = () => {
+    const {no,str,set} = usePxaState({no:1,str:"str"});
+	const fn = () => {
+		set(d=>({
+			no: d.no + 1,
+			str: "new str",
+			"nested.obj.prop": true,
+		})
+	}
+
+// result: {
+//	no:2,
+//	str: "new str",
+//	nested:{
+//		obj:{
+//			prop:true,
+//		}
+//	}
+//}
+
 ```
 
-```js
-const state = usePxaState(true);
-// result: {value:"true"}
-```
+# Basic Usage of usePxaContext
+
+This function is used instead of _useContext_ or _Redux_ or similar.
 
 ```js
-const state = usePxaState({
-    city: "London",
-    postCode: "n2",
-    street: "Twyford Avenue",
+import { createPxaContext, usePrepareContext, usePxaContext } from "pxa-state";
+```
+
+You can create the context outside of a React Component:
+
+```js
+const globalContext = createPxaContext({
+    no: 1,
+    str: "str",
 });
-// result: {city:"London",postCode:"n2", street:"Twyford Avenue"}
+//...
 ```
 
-### 3- If you wish, change immutable key name (default is "value")
+Or, you can create the context inside a React Component:
+
+```js
+const globalContext = createPxaContext();
+
+const Component1 = () => {
+	usePrepareContext(globalContext,{
+			no:1,
+			str:"str",
+		})
+//...
+```
+
+Then you can use context wherever you wish to use.
+
+```js
+const Component2 = () => {
+	const { no, str, set } = usePxaContext(globalContext, (s) => [s.no, s.str, s.set]);
+	const  fn = () => {
+		set(d=>({
+			no: d.no + 1,
+			str: "new str",
+			"nested.obj.prop": true,
+		})
+	}
+
+// result: {
+//	no:2,
+//	str: "new str",
+//	nested:{
+//		obj:{
+//			prop:true,
+//		}
+//	}
+//}
+```
+
+# Features
+
+For feature descriptions, I used usePxaState.
+However, all features work the same way in createPxaContext and usePrepareContext.
+
+#### Changing immutable key name
+
+Easy. Define it inside settings.
 
 ```js
 const state = usePxaState("test string", {
@@ -124,38 +141,68 @@ const state = usePxaState("test string", {
 // result: {data:"test string"}
 ```
 
-### 4- If you need, add your functions
+#### Adding functions inside the context
+
+Easy. Place them inside settings. Context functions gets state prop first, then optional args.
 
 ```js
-const state = usePxaState(
-    { no: 0, str: "str", arr: [0, 1, 2] },
-    {
-        externalFunction: (state, arg1, arg2) => {},
-        anotherFunction: (state, arg3, arg4, arg5) => {},
-    },
-);
+const state = usePxaState(initialValue, {
+    externalFunction: (state, arg1, arg2) => {},
+    anotherFunction: (state, arg3, arg4, arg5) => {},
+});
 ```
 
-You can access this functions via state when you need them. For example:
+Now you can access functions via state when you need them. For example:
 
 ```js
 state.anotherFunction(arg3, arg4, arg5);
 ```
 
-### 5- Get Method
+#### Using changeListener
+
+Easier. If you set the _changeListener_ inside settings, the listener function will be triggered on all state changes. In this way, you get a small-scale React's _useEffect_ function. Moreover, changeListener works faster and triggers earlier than useEffect.
+
+```js
+const state = usePxaState(initialValue, {
+    changeListener: (differences, keys) => {},
+});
+```
+
+> [!IMPORTANT]
+> The changeListener method sends nested variables in quotes.
+
+Example response:
+
+```js
+const changeListener = (differences, keys) => {
+    if (keys.includes("p1.p2.p3")) {
+        // ... do smth
+    }
+};
+```
+
+#### get Method
 
 TBH, you don't need to use this function much but, if you do:
 
 ```js
-state.get();
+const currState = state.get();
 ```
 
-### 6- Set Method
+#### getPrevious Method
 
-If your data is immutable, you need to set it via immutableKeyName. **"value"** is default.
+If you need to get one step back, you can use getPrevious
 
 ```js
-state.set({
+const previousState = state.getPrevious();
+```
+
+#### set Method
+
+If your data is immutable, you need to set it via immutableKeyName. (**"value"** is default).
+
+```js
+set({
     value: "new string",
 });
 ```
@@ -163,7 +210,7 @@ state.set({
 if it mutable, use it normally.
 
 ```js
-state.set({
+set({
     no: 2,
     str: "str+",
     arr: [1, 2, 3, 45],
@@ -173,7 +220,7 @@ state.set({
 Whether defined or not, you can access key names in nested levels by enclosing them in quotation marks.
 
 ```js
-state.set({
+set({
     "person.address.city.isValid": true,
 });
 ```
@@ -181,50 +228,50 @@ state.set({
 If you need state in set, return a function instead of an object:
 
 ```js
-state.set((state) => ({
+set((state) => ({
     no: state.no + 1,
     str: state.str + "+",
 }));
 ```
 
-### 7- immerSet Method
+#### immerSet Method
 
 immerSet is original setImmer function without any change. Check out useImmer documantation for more info.
 
-# Using usePxaContext
-
-### 1- Set a global context
-
-Its usage almost same with usePxaState. Check out usePxaState features above. You can use them all in pxaContext.
-
 ```js
-import { createPxaContext } from "pxa-state";
-
-export const globalContext = createPxaContext(
-    { no: 0, str: "str", arr: [0, 1, 2] },
-    {
-        externalFunction: (state, arg1, arg2) => {},
-        anotherFunction: (state, arg3, arg4, arg5) => {},
-    },
-);
+immerSet(draft=>{
+	no: draft.no + 1,
+	str: "str+",
+	arr: [1, 2, 3, 45],
+});
 ```
 
-### 2- Accessing a global context
+# Api
 
-> [!IMPORTANT]
-> To use pxa-state effectively, you should only fetch the data you need.
+> const state = usePxaState(**initialValue**,**stateSettings**);
 
-> [!IMPORTANT]
-> argArr and argFunction must correspond directly to each other.
+> const globalContext = createPxaContext(**initialValue**,**stateSettings**))
 
-```js
-import {globalContext} from "...";
-import {usePxaContext} from "pxa-state";
+> usePrepareContext(**initialValue**,**stateSettings**))
 
-const Component = () => {
-    const [no, set] = usePxaContext((s) => [s.no, s.set], globalContext);
-    //...
-```
+| initialValue | any - optional                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+|              | **\*initialValue** can be any type. Mutable or immutable. Excluding a function type.              |
+|              | You don't need to set initialValue at the beginning and if you do, you can change its type later. |
+| ⚠️           | initialValue can not be a function.                                                               |
+
+| stateSettings          | object - optional                                                                                                                                                                                                                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| immutableKeyName       | **should be a string**. usePxaState converts immutable data to mutable. By this way you can handle string, boolean etc. Immutable types uses immutableKeyName to place.Immutable types are located under the immutableKeyName prop within the state. The default value is ‘value’. |
+| changeListener         | **should be a function**. If anything is changed in the state, changeListener function is triggerred. changeListener function gets 2 props: (differences, keys)=>{}                                                                                                                |
+| … additional functions | You can add your additional functions inside stateSettings. pxaState pushes existing state first, then other args. Check out examples above.                                                                                                                                       |
+
+> const **argObj** = usePxaContext(**contextFile**, **argFunction**)
+> const {**val1, val2, fn1, fn2, set**} = usePxaContext(**contextFile**, **s=>[s.val1,sval2,s.fn1,s.fn2, s.set]**)
+
+| argFunction | function - mandatory                                                                                               |
+| ----------- | ------------------------------------------------------------------------------------------------------------------ |
+|             | argFunction gets desired values from state. To use pxa-state effectively, you should only fetch the data you need. |
 
 # Other Props
 
@@ -236,30 +283,19 @@ import { produce, freeze, current, original } from "pxa-state";
 import { useImmer, useImmerReducer } from "pxa-state";
 ```
 
-# Api
+# Updates
 
-> const state = usePxaState(**initialValue**,**stateSettings**);
+## 0.0.40
 
-> const globalContext = createPxaContext(**initialValue**,**stateSettings**))
+-   usePrepareContext is added. Now, you can set a context inside a React component.
+-   changeListener is added.
+-   getPrevious method is added.
+-   Jest tests are added. Check out gitHub repo for details.
+-   set is updated.
 
-| initialValue | any - optional                                                                                    |
-| ------------ | ------------------------------------------------------------------------------------------------- |
-|              | **\*initialValue** can be any type. Mutable or immutable. Excluding a function type.              |
-|              | You don't need to set initialValue at the beginning and if you do, you can change its type later. |
-| ⚠️           | initialValue can not be a function.                                                               |
+## 0.0.30
 
-| stateSettings          | object - optional                                                                                                                                                                                                                                          |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| immutableKeyName       | usePxaState converts immutable data to mutable. By this way you can handle string, boolean etc. Immutable types uses immutableKeyName to place.Immutable types are located under the immutableKeyName prop within the state. The default value is ‘value’. |
-| … additional functions | You can add your additional functions inside stateSettings. pxaState pushes existing state first, then other args. Check out examples above.                                                                                                               |
-
-> const **argArr** = usePxaContext(**argFunction**,**contextFile**)
-
-| argFunction | function - mandatory                                                                                               |
-| ----------- | ------------------------------------------------------------------------------------------------------------------ |
-|             | argFunction gets desired values from state. To use pxa-state effectively, you should only fetch the data you need. |
-| ⚠️          | argArr and argFunction must correspond directly to each other.                                                     |
-| ⚠️          | (s)=> [s.no, s.value, s.set]                                                                                       |
+First release
 
 # Credits
 

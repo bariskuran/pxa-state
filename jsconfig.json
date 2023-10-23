@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "jsx": "react",
+        "baseUrl": "./src",
+        "paths": {
+            "ui/*": ["./ui/*"]
+        }
+    },
+    "exclude": [
+        "._RAW",
+        ".storybook",
+        ".vscode",
+        ".git",
+        ".app-cache",
+        ".npm",
+        ".npm-tmp",
+        "dist",
+        "dist*",
+        "node_modules",
+        "node_modules/",
+        "**/dist/*",
+        "**/node_modules/*"
+    ]
+}
