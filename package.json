@@ -2,7 +2,7 @@
     "main2": "src/lib/index.js",
     "main": "dist/index.js",
     "name": "pxa-state",
-    "version": "0.0.40",
+    "version": "0.0.41",
     "keywords": [
         "zustand",
         "immer",
@@ -37,7 +37,7 @@
         "zustand": "^4.4.1"
     },
     "peerDependencies": {
-        "react": "^18.2.0"
+        "react": "^17.0.0"
     },
     "devDependencies": {
         "@babel/cli": "^7.20.7",
