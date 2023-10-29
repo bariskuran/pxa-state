@@ -2,8 +2,7 @@ import { immuToMu, typeOf } from "./functions";
 import { useSetX } from "./useSetX";
 
 export const createPxaClass = (states) => {
-    const { data, IMMUTABLE_NAME, ADD_FN, externalSet, externalGet, externalGetPrevious, externalPrepareContext } =
-        states || {};
+    const { data, IMMUTABLE_NAME, ADD_FN, externalSet, externalGet, externalGetPrevious, externalReSet } = states || {};
 
     /**
      * Class
@@ -32,9 +31,8 @@ export const createPxaClass = (states) => {
             const setX = useSetX(curr, incoming);
             externalSet(setX);
         };
-        prepareContext = (incoming, settings) => {
-            const setX = useSetX(externalGet(), incoming);
-            externalPrepareContext(setX, settings);
+        reSet = (incoming, settings) => {
+            externalReSet(incoming, settings);
         };
         get = () => {
             externalGet();

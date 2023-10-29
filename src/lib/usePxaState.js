@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState, useMemo } from "react";
-import { freezedState, setState, findDifferences } from "./tools/functions";
+import { freezedState, setState } from "./tools/functions";
+import { triggerChangeListener } from "./tools/functions";
 import { createPxaClass } from "./tools/createPxaClass";
 
 export const usePxaState = (initialState, settings = {}) => {
@@ -35,31 +36,40 @@ export const usePxaState = (initialState, settings = {}) => {
         const newData = setState({
             fn: incoming,
             currRef: dataRef,
+            prevRef: prevRef,
             immutableName: currImmutableKeyName,
         });
+
         if (currChangeListener && typeof currChangeListener === "function") {
-            const diffObj = findDifferences(dataRef?.current, newData);
-            const keys = Object.keys(diffObj);
-            if (keys?.length > 0) currChangeListener(diffObj, keys);
+            triggerChangeListener(dataRef, newData, currImmutableKeyName, currChangeListener);
         }
+
         prevRef.current = dataRef.current;
         dataRef.current = newData;
         setData(newData);
     }, []);
-    const externalPrepareContext = useCallback((immerFn, settings) => {
-        const { immutableKeyName: immutableKeyName2, changeListener: changeListener2, ...addFn2 } = settings || {};
-        currChangeListener = changeListener2 || changeListener1;
-        currImmutableKeyName = immutableKeyName2 || immutableKeyName1;
-        currAddFn = { ...currAddFn, ...addFn2 };
+    const externalReSet = useCallback((incoming, settings) => {
+        if (settings) {
+            const { immutableKeyName: immutableKeyName2, changeListener: changeListener2, ...addFn2 } = settings || {};
+
+            currImmutableKeyName = immutableKeyName2 || immutableKeyName1;
+            currAddFn = { ...currAddFn, ...addFn2 };
+            currChangeListener = changeListener2 || changeListener1;
+        }
         const newData = setState({
-            fn: immerFn,
+            fn: incoming,
             currRef: dataRef,
+            prevRef: prevRef,
             immutableName: currImmutableKeyName,
         });
+
+        if (currChangeListener && typeof currChangeListener === "function") {
+            triggerChangeListener(dataRef, newData, currImmutableKeyName, currChangeListener);
+        }
+
         prevRef.current = dataRef.current;
         dataRef.current = newData;
         setData(newData);
-        return newData;
     }, []);
     const externalGet = () => dataRef?.current;
     const externalGetPrevious = () => prevRef?.current;
@@ -76,7 +86,7 @@ export const usePxaState = (initialState, settings = {}) => {
                 externalSet,
                 externalGet,
                 externalGetPrevious,
-                externalPrepareContext,
+                externalReSet,
                 changeListener: currChangeListener,
             }),
         [dataRef?.current],

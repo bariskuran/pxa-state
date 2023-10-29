@@ -82,18 +82,25 @@ export const setState = (settings) => {
                 "p5.p6.0.p7.p12": undefined,
             }
  */
-export const findDifferences = (oldConst, newConst, basePath) => {
+export const findDifferences = (oldConst, newConst, IMMUTABLE_KEY_NAME, basePath) => {
+    // console.log(oldConst, newConst);
     const [type1, type2] = typeOf(oldConst, newConst);
     let result = {};
 
-    if (type1 === "undefined" || type2 === "undefined" || type1 === "null" || type2 === "null" || type1 !== type2) {
-        result[basePath || "state"] = newConst;
-    } else if (type1 === "function") {
-        result[basePath || "state"] = newConst;
+    if (
+        type1 !== type2 ||
+        type1 === "function" ||
+        type1 === "undefined" ||
+        type2 === "undefined" ||
+        type1 === "null" ||
+        type2 === "null"
+    ) {
+        if (type2 === "object") result = newConst;
+        else result[basePath || IMMUTABLE_KEY_NAME] = newConst;
     } else if (type1 === "array" || type1 === "object") {
         Object.keys(newConst).forEach((key) => {
             const currentPath = basePath ? `${basePath}.${key}` : key;
-            const nested = findDifferences(oldConst[key], newConst[key], currentPath);
+            const nested = findDifferences(oldConst[key], newConst[key], IMMUTABLE_KEY_NAME, currentPath);
             result = { ...result, ...nested };
         });
         Object.keys(oldConst).forEach((key) => {
@@ -103,8 +110,37 @@ export const findDifferences = (oldConst, newConst, basePath) => {
             }
         });
     } else if (oldConst !== newConst) {
-        result[basePath || "state"] = newConst;
+        result[basePath || IMMUTABLE_KEY_NAME] = newConst;
     }
 
     return result;
+};
+
+/**
+ * @description finds stringed path inside obj
+ * @param {object} obj
+ * @param {string} path
+ * @returns value or undefined
+ */
+export const getValueByPath = (obj, path) => {
+    const keys = path.split(".");
+    return keys.reduce((acc, key) => {
+        return acc ? acc[key] : undefined;
+    }, obj);
+};
+
+export const triggerChangeListener = (dataRef, newData, currImmutableKeyName, currChangeListener) => {
+    const newValues = findDifferences(dataRef?.current, newData, currImmutableKeyName);
+    const keys = Object.keys(newValues);
+    const previousValues = {};
+    keys.forEach((key) => {
+        if (key.includes(".")) {
+            previousValues[key] = getValueByPath(dataRef?.current, key);
+        } else if (typeof dataRef.current === "object") {
+            previousValues[key] = dataRef?.current && dataRef?.current[key];
+        } else {
+            previousValues[key] = dataRef?.current;
+        }
+    });
+    if (keys?.length > 0) currChangeListener(keys, newValues, previousValues);
 };

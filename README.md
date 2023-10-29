@@ -8,6 +8,11 @@
 
 This mini tool aims to address state management challenges in React. It was developed to address issues such as the complexity created by useState, the difficulty of using nested objects, the need to render all components covered by ContextApi, and the constant requirement to write reducers in the usage of global management solutions like Redux, all under one roof.
 
+### Demos
+
+[usePxaState](https://bit.ly/usePxaState "usePxaState")
+[usePxaContext](https://bit.ly/usePxaContext "usePxaContext")
+
 # Installing pxa-state
 
 ```node
@@ -34,7 +39,7 @@ import { usePxaState } from "pxa-state";
 const Component = () => {
     const {value, set} = usePxaState(123);
 	const fn = () => {
-		set(d=>({value: d.value + 1})
+		set(d=>({value: d.value + 1}));
 	}
 
 // result: {value:123}
@@ -70,12 +75,16 @@ const Component = () => {
 
 ```
 
+#### Advanced Usage Example
+
+[usePxaState](https://bit.ly/usePxaState "usePxaState")
+
 # Basic Usage of usePxaContext
 
 This function is used instead of _useContext_ or _Redux_ or similar.
 
 ```js
-import { createPxaContext, usePrepareContext, usePxaContext } from "pxa-state";
+import { createPxaContext, usePxaContext } from "pxa-state";
 ```
 
 You can create the context outside of a React Component:
@@ -94,10 +103,15 @@ Or, you can create the context inside a React Component:
 const globalContext = createPxaContext();
 
 const Component1 = () => {
-	usePrepareContext(globalContext,{
-			no:1,
-			str:"str",
+	const state = usePxaContext(globalContext, (s) => [s.reSet]);
+
+	useEffect(()=>{
+		state.reSet({
+    		no: 1,
+    		str: "str",
 		})
+	},[])
+
 //...
 ```
 
@@ -125,10 +139,14 @@ const Component2 = () => {
 //}
 ```
 
+#### Advanced Usage Example
+
+[usePxaContext](https://bit.ly/usePxaContext "usePxaContext")
+
 # Features
 
 For feature descriptions, I used usePxaState.
-However, all features work the same way in createPxaContext and usePrepareContext.
+However, all features work the same way in createPxaContext.
 
 #### Changing immutable key name
 
@@ -160,11 +178,11 @@ state.anotherFunction(arg3, arg4, arg5);
 
 #### Using changeListener
 
-Easier. If you set the _changeListener_ inside settings, the listener function will be triggered on all state changes. In this way, you get a small-scale React's _useEffect_ function. Moreover, changeListener works faster and triggers earlier than useEffect.
+Easier. If you set the _changeListener_ inside settings, the listener function will be triggered on all state changes. In this way, you get a small-scale React's _useEffect_ function. Moreover, changeListener works faster and triggers earlier than useEffect. It gets _keys_ array, _latestValues_ object and _previousValues_ object.
 
 ```js
 const state = usePxaState(initialValue, {
-    changeListener: (differences, keys) => {},
+    changeListener: (keys, latestValues, previousValues) => {},
 });
 ```
 
@@ -174,7 +192,7 @@ const state = usePxaState(initialValue, {
 Example response:
 
 ```js
-const changeListener = (differences, keys) => {
+const changeListener = (keys, latestValues, previousValues) => {
     if (keys.includes("p1.p2.p3")) {
         // ... do smth
     }
@@ -246,13 +264,19 @@ immerSet(draft=>{
 });
 ```
 
+#### reSet Method
+
+If you need to reSet state or context, you can use reSet to add new functions to your context.
+
+```js
+reSet(initialValue, newSettings);
+```
+
 # Api
 
 > const state = usePxaState(**initialValue**,**stateSettings**);
 
 > const globalContext = createPxaContext(**initialValue**,**stateSettings**))
-
-> usePrepareContext(**initialValue**,**stateSettings**))
 
 | initialValue | any - optional                                                                                    |
 | ------------ | ------------------------------------------------------------------------------------------------- |
@@ -263,7 +287,7 @@ immerSet(draft=>{
 | stateSettings          | object - optional                                                                                                                                                                                                                                                                  |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | immutableKeyName       | **should be a string**. usePxaState converts immutable data to mutable. By this way you can handle string, boolean etc. Immutable types uses immutableKeyName to place.Immutable types are located under the immutableKeyName prop within the state. The default value is ‘value’. |
-| changeListener         | **should be a function**. If anything is changed in the state, changeListener function is triggerred. changeListener function gets 2 props: (differences, keys)=>{}                                                                                                                |
+| changeListener         | **should be a function**. If anything is changed in the state, changeListener function is triggerred. changeListener function gets 3 props: (keys, latestValues, previousValues)=>{}                                                                                               |
 | … additional functions | You can add your additional functions inside stateSettings. pxaState pushes existing state first, then other args. Check out examples above.                                                                                                                                       |
 
 > const **argObj** = usePxaContext(**contextFile**, **argFunction**)
@@ -285,6 +309,13 @@ import { useImmer, useImmerReducer } from "pxa-state";
 
 # Updates
 
+## 0.0.42
+
+-   usePrepareContext is removed. Instead use _reSet_ method.
+-   previousValues are added to changeListener.
+-   Couple of bug fixes.
+-   CodeSandBox demos are added to README.
+
 ## 0.0.40
 
 -   usePrepareContext is added. Now, you can set a context inside a React component.
@@ -295,7 +326,7 @@ import { useImmer, useImmerReducer } from "pxa-state";
 
 ## 0.0.30
 
-First release
+First public release
 
 # Credits
 

@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.useSetX = void 0;
 var _functions = require("./functions");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -42,7 +46,7 @@ var useSetX = exports.useSetX = function useSetX() {
       newState = setNestedValue(newState, splittedPath, value);
     });
   }
-  return newState;
+  return removeUndefined(newState);
 };
 var setNestedValue = function setNestedValue(state, splittedPath, newval) {
   if (splittedPath.length > 1) {
@@ -53,19 +57,32 @@ var setNestedValue = function setNestedValue(state, splittedPath, newval) {
     } catch (_unused) {
       subObject = _objectSpread({}, setNestedValue(state, splittedPath, newval));
     }
-    return removeUndefined(_objectSpread(_objectSpread({}, state), {}, _defineProperty({}, field, subObject)));
+    return _objectSpread(_objectSpread({}, state), {}, _defineProperty({}, field, subObject));
   } else {
     var updatedState = {};
     updatedState[splittedPath.shift()] = newval;
     return _objectSpread(_objectSpread({}, state), updatedState);
   }
 };
-var removeUndefined = function removeUndefined(obj) {
-  for (var prop in obj) {
-    if (_typeof(obj[prop]) === "object") {
-      obj[prop] = removeUndefined(obj[prop]);
-      if (Object.keys(obj[prop]).length === 0) delete obj[prop];
-    } else if (obj[prop] === undefined) delete obj[prop];
+var removeUndefined = function removeUndefined(obj2) {
+  if (_typeof(obj2) !== "object" || obj2 === null) return obj2;
+  if (Array.isArray(obj2)) {
+    var obj = _toConsumableArray(obj2);
+    for (var i = obj.length - 1; i >= 0; i--) {
+      obj[i] = removeUndefined(obj[i]);
+      if (obj[i] === undefined) {
+        obj.splice(i, 1);
+      }
+    }
+    return obj;
+  } else {
+    var _obj = _objectSpread({}, obj2);
+    for (var key in _obj) {
+      _obj[key] = removeUndefined(_obj[key]);
+      if (_obj[key] === undefined) {
+        delete _obj[key];
+      }
+    }
+    return _obj;
   }
-  return obj;
 };

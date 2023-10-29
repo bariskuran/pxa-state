@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.typeOf = exports.setState = exports.muToImmu = exports.immuToMu = exports.freezedState = exports.findDifferences = void 0;
+exports.typeOf = exports.triggerChangeListener = exports.setState = exports.muToImmu = exports.immuToMu = exports.getValueByPath = exports.freezedState = exports.findDifferences = void 0;
 var _immer = require("immer");
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -113,20 +113,19 @@ var setState = exports.setState = function setState(settings) {
                 "p5.p6.0.p7.p12": undefined,
             }
  */
-var findDifferences = exports.findDifferences = function findDifferences(oldConst, newConst, basePath) {
+var findDifferences = exports.findDifferences = function findDifferences(oldConst, newConst, IMMUTABLE_KEY_NAME, basePath) {
+  // console.log(oldConst, newConst);
   var _typeOf = typeOf(oldConst, newConst),
     _typeOf2 = _slicedToArray(_typeOf, 2),
     type1 = _typeOf2[0],
     type2 = _typeOf2[1];
   var result = {};
-  if (type1 === "undefined" || type2 === "undefined" || type1 === "null" || type2 === "null" || type1 !== type2) {
-    result[basePath || "state"] = newConst;
-  } else if (type1 === "function") {
-    result[basePath || "state"] = newConst;
+  if (type1 !== type2 || type1 === "function" || type1 === "undefined" || type2 === "undefined" || type1 === "null" || type2 === "null") {
+    if (type2 === "object") result = newConst;else result[basePath || IMMUTABLE_KEY_NAME] = newConst;
   } else if (type1 === "array" || type1 === "object") {
     Object.keys(newConst).forEach(function (key) {
       var currentPath = basePath ? "".concat(basePath, ".").concat(key) : key;
-      var nested = findDifferences(oldConst[key], newConst[key], currentPath);
+      var nested = findDifferences(oldConst[key], newConst[key], IMMUTABLE_KEY_NAME, currentPath);
       result = _objectSpread(_objectSpread({}, result), nested);
     });
     Object.keys(oldConst).forEach(function (key) {
@@ -136,7 +135,35 @@ var findDifferences = exports.findDifferences = function findDifferences(oldCons
       }
     });
   } else if (oldConst !== newConst) {
-    result[basePath || "state"] = newConst;
+    result[basePath || IMMUTABLE_KEY_NAME] = newConst;
   }
   return result;
+};
+
+/**
+ * @description finds stringed path inside obj
+ * @param {object} obj
+ * @param {string} path
+ * @returns value or undefined
+ */
+var getValueByPath = exports.getValueByPath = function getValueByPath(obj, path) {
+  var keys = path.split(".");
+  return keys.reduce(function (acc, key) {
+    return acc ? acc[key] : undefined;
+  }, obj);
+};
+var triggerChangeListener = exports.triggerChangeListener = function triggerChangeListener(dataRef, newData, currImmutableKeyName, currChangeListener) {
+  var newValues = findDifferences(dataRef === null || dataRef === void 0 ? void 0 : dataRef.current, newData, currImmutableKeyName);
+  var keys = Object.keys(newValues);
+  var previousValues = {};
+  keys.forEach(function (key) {
+    if (key.includes(".")) {
+      previousValues[key] = getValueByPath(dataRef === null || dataRef === void 0 ? void 0 : dataRef.current, key);
+    } else if (_typeof(dataRef.current) === "object") {
+      previousValues[key] = (dataRef === null || dataRef === void 0 ? void 0 : dataRef.current) && (dataRef === null || dataRef === void 0 ? void 0 : dataRef.current[key]);
+    } else {
+      previousValues[key] = dataRef === null || dataRef === void 0 ? void 0 : dataRef.current;
+    }
+  });
+  if ((keys === null || keys === void 0 ? void 0 : keys.length) > 0) currChangeListener(keys, newValues, previousValues);
 };

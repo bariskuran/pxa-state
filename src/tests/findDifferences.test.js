@@ -61,6 +61,10 @@ test("findDifferences_Test: Advanced Obj tests", () => {
     });
 });
 
+test("findDifferences_Test: Und to Obj", () => {
+    expect(findDifferences(undefined, ob2)).toStrictEqual(ob2);
+});
+
 test("findDifferences_Test: Basic Obj tests", () => {
     expect(findDifferences(ob1, ob2)).toStrictEqual({ t1: str2 });
     expect(findDifferences(ob3, ob4)).toStrictEqual({ t1: undefined, t2: str1 });

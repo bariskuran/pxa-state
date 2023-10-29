@@ -59,9 +59,7 @@ var createPxaContext = function createPxaContext(initialValue, settings) {
         immutableName: currImmutableKeyName
       });
       if (currChangeListener && typeof currChangeListener === "function") {
-        var diffObj = (0, _functions.findDifferences)(prevRef === null || prevRef === void 0 ? void 0 : prevRef.current, newData);
-        var keys = Object.keys(diffObj);
-        if ((keys === null || keys === void 0 ? void 0 : keys.length) > 0) currChangeListener(diffObj, keys);
+        (0, _functions.triggerChangeListener)(dataRef, newData, currImmutableKeyName, currChangeListener);
       }
       prevRef.current = dataRef.current;
       dataRef.current = newData;
@@ -70,25 +68,30 @@ var createPxaContext = function createPxaContext(initialValue, settings) {
         IMMUTABLE_NAME: currImmutableKeyName,
         ADD_FN: currAddFn,
         externalSet: externalSet,
-        externalPrepareContext: externalPrepareContext,
         externalGet: externalGet,
-        externalGetPrevious: externalGetPrevious
+        externalGetPrevious: externalGetPrevious,
+        externalReSet: externalReSet
       }));
     };
-    var externalPrepareContext = function externalPrepareContext(incomingData, settings) {
-      var _ref2 = settings || {},
-        immutableKeyName2 = _ref2.immutableKeyName,
-        changeListener2 = _ref2.changeListener,
-        addFn2 = _objectWithoutProperties(_ref2, _excluded2);
+    var externalReSet = function externalReSet(incomingData, settings) {
+      if (settings) {
+        var _ref2 = settings || {},
+          immutableKeyName2 = _ref2.immutableKeyName,
+          changeListener2 = _ref2.changeListener,
+          addFn2 = _objectWithoutProperties(_ref2, _excluded2);
+        currImmutableKeyName = immutableKeyName2 || immutableKeyName1;
+        currAddFn = _objectSpread(_objectSpread({}, currAddFn), addFn2);
+        currChangeListener = changeListener2 || changeListener1;
+      }
       var newData = (0, _functions.setState)({
         fn: incomingData,
         currRef: dataRef,
         prevRef: prevRef,
         immutableName: currImmutableKeyName
       });
-      currImmutableKeyName = immutableKeyName2 || immutableKeyName1;
-      currAddFn = _objectSpread(_objectSpread({}, currAddFn), addFn2);
-      currChangeListener = changeListener2 || changeListener1;
+      if (currChangeListener && typeof currChangeListener === "function") {
+        (0, _functions.triggerChangeListener)(dataRef, newData, currImmutableKeyName, currChangeListener);
+      }
       prevRef.current = dataRef.current;
       dataRef.current = newData;
       set((0, _createPxaClass.createPxaClass)({
@@ -97,9 +100,9 @@ var createPxaContext = function createPxaContext(initialValue, settings) {
         ADD_FN: currAddFn,
         externalSet: externalSet,
         externalGet: externalGet,
-        externalPrepareContext: externalPrepareContext,
-        externalGetPrevious: externalGetPrevious
-      }));
+        externalGetPrevious: externalGetPrevious,
+        externalReSet: externalReSet
+      }), true);
     };
     return (0, _createPxaClass.createPxaClass)({
       data: initialValue,
@@ -107,8 +110,8 @@ var createPxaContext = function createPxaContext(initialValue, settings) {
       ADD_FN: currAddFn,
       externalSet: externalSet,
       externalGet: externalGet,
-      externalPrepareContext: externalPrepareContext,
-      externalGetPrevious: externalGetPrevious
+      externalGetPrevious: externalGetPrevious,
+      externalReSet: externalReSet
     });
   });
 };

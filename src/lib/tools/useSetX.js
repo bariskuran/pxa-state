@@ -18,7 +18,7 @@ export const useSetX = (curr = {}, incoming) => {
         });
     }
 
-    return newState;
+    return removeUndefined(newState);
 };
 
 const setNestedValue = (state, splittedPath, newval) => {
@@ -32,7 +32,7 @@ const setNestedValue = (state, splittedPath, newval) => {
                 ...setNestedValue(state, splittedPath, newval),
             };
         }
-        return removeUndefined({ ...state, [field]: subObject });
+        return { ...state, [field]: subObject };
     } else {
         let updatedState = {};
         updatedState[splittedPath.shift()] = newval;
@@ -40,12 +40,26 @@ const setNestedValue = (state, splittedPath, newval) => {
     }
 };
 
-const removeUndefined = (obj) => {
-    for (const prop in obj) {
-        if (typeof obj[prop] === "object") {
-            obj[prop] = removeUndefined(obj[prop]);
-            if (Object.keys(obj[prop]).length === 0) delete obj[prop];
-        } else if (obj[prop] === undefined) delete obj[prop];
+const removeUndefined = (obj2) => {
+    if (typeof obj2 !== "object" || obj2 === null) return obj2;
+
+    if (Array.isArray(obj2)) {
+        const obj = [...obj2];
+        for (let i = obj.length - 1; i >= 0; i--) {
+            obj[i] = removeUndefined(obj[i]);
+            if (obj[i] === undefined) {
+                obj.splice(i, 1);
+            }
+        }
+        return obj;
+    } else {
+        const obj = { ...obj2 };
+        for (const key in obj) {
+            obj[key] = removeUndefined(obj[key]);
+            if (obj[key] === undefined) {
+                delete obj[key];
+            }
+        }
+        return obj;
     }
-    return obj;
 };

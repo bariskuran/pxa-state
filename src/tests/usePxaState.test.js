@@ -361,5 +361,19 @@ export const testFunction = (value, index) => {
 };
 
 [...setImmerTests, ...setTests, ...setObjTests, ...setFunctionTests].forEach((value, index) => {
-    describe(SetTestComponent, () => testFunction(value, index));
+    describe(SetTestComponent, () => {
+        const { desc, fnexpected, initialValue, initialExpected, fn } = value || {};
+        //
+        it(desc, () => {
+            const { getByTestId } = render(
+                <SetTestComponent initialValue={initialValue} IMMUTABLE_KEY_NAME="imm" key2={index} fn={fn} />,
+            );
+            const stringifiedData = getByTestId("stringifiedData").textContent;
+            expect(stringifiedData).toStrictEqual(initialExpected);
+            const button = getByTestId(index);
+            fireEvent.click(button);
+            const stringifiedData2 = getByTestId("stringifiedData").textContent;
+            expect(stringifiedData2).toStrictEqual(fnexpected);
+        });
+    });
 });

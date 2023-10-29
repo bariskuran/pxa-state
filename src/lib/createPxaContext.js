@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { setState, findDifferences } from "./tools/functions";
+import { setState, findDifferences, getValueByPath, triggerChangeListener } from "./tools/functions";
 import { createPxaClass } from "./tools/createPxaClass";
 
 const createPxaContext = (initialValue, settings) => {
@@ -40,10 +40,9 @@ const createPxaContext = (initialValue, settings) => {
                 immutableName: currImmutableKeyName,
             });
             if (currChangeListener && typeof currChangeListener === "function") {
-                const diffObj = findDifferences(prevRef?.current, newData);
-                const keys = Object.keys(diffObj);
-                if (keys?.length > 0) currChangeListener(diffObj, keys);
+                triggerChangeListener(dataRef, newData, currImmutableKeyName, currChangeListener);
             }
+
             prevRef.current = dataRef.current;
             dataRef.current = newData;
             set(
@@ -54,14 +53,24 @@ const createPxaContext = (initialValue, settings) => {
                           IMMUTABLE_NAME: currImmutableKeyName,
                           ADD_FN: currAddFn,
                           externalSet,
-                          externalPrepareContext,
                           externalGet,
                           externalGetPrevious,
+                          externalReSet,
                       }),
             );
         };
-        const externalPrepareContext = (incomingData, settings) => {
-            const { immutableKeyName: immutableKeyName2, changeListener: changeListener2, ...addFn2 } = settings || {};
+        const externalReSet = (incomingData, settings) => {
+            if (settings) {
+                const {
+                    immutableKeyName: immutableKeyName2,
+                    changeListener: changeListener2,
+                    ...addFn2
+                } = settings || {};
+
+                currImmutableKeyName = immutableKeyName2 || immutableKeyName1;
+                currAddFn = { ...currAddFn, ...addFn2 };
+                currChangeListener = changeListener2 || changeListener1;
+            }
 
             const newData = setState({
                 fn: incomingData,
@@ -69,10 +78,9 @@ const createPxaContext = (initialValue, settings) => {
                 prevRef: prevRef,
                 immutableName: currImmutableKeyName,
             });
-
-            currImmutableKeyName = immutableKeyName2 || immutableKeyName1;
-            currAddFn = { ...currAddFn, ...addFn2 };
-            currChangeListener = changeListener2 || changeListener1;
+            if (currChangeListener && typeof currChangeListener === "function") {
+                triggerChangeListener(dataRef, newData, currImmutableKeyName, currChangeListener);
+            }
 
             prevRef.current = dataRef.current;
             dataRef.current = newData;
@@ -83,9 +91,10 @@ const createPxaContext = (initialValue, settings) => {
                     ADD_FN: currAddFn,
                     externalSet,
                     externalGet,
-                    externalPrepareContext,
                     externalGetPrevious,
+                    externalReSet,
                 }),
+                true,
             );
         };
         return createPxaClass({
@@ -94,8 +103,8 @@ const createPxaContext = (initialValue, settings) => {
             ADD_FN: currAddFn,
             externalSet,
             externalGet,
-            externalPrepareContext,
             externalGetPrevious,
+            externalReSet,
         });
     });
 };

@@ -27,7 +27,7 @@ var createPxaClass = exports.createPxaClass = function createPxaClass(states) {
     externalSet = _ref.externalSet,
     externalGet = _ref.externalGet,
     externalGetPrevious = _ref.externalGetPrevious,
-    externalPrepareContext = _ref.externalPrepareContext;
+    externalReSet = _ref.externalReSet;
 
   /**
    * Class
@@ -46,9 +46,8 @@ var createPxaClass = exports.createPxaClass = function createPxaClass(states) {
       var setX = (0, _useSetX.useSetX)(curr, incoming);
       externalSet(setX);
     });
-    _defineProperty(this, "prepareContext", function (incoming, settings) {
-      var setX = (0, _useSetX.useSetX)(externalGet(), incoming);
-      externalPrepareContext(setX, settings);
+    _defineProperty(this, "reSet", function (incoming, settings) {
+      externalReSet(incoming, settings);
     });
     _defineProperty(this, "get", function () {
       externalGet();

@@ -62,34 +62,38 @@ var usePxaState = exports.usePxaState = function usePxaState(initialState) {
     var newData = (0, _functions.setState)({
       fn: incoming,
       currRef: dataRef,
+      prevRef: prevRef,
       immutableName: currImmutableKeyName
     });
     if (currChangeListener && typeof currChangeListener === "function") {
-      var diffObj = (0, _functions.findDifferences)(dataRef === null || dataRef === void 0 ? void 0 : dataRef.current, newData);
-      var keys = Object.keys(diffObj);
-      if ((keys === null || keys === void 0 ? void 0 : keys.length) > 0) currChangeListener(diffObj, keys);
+      (0, _functions.triggerChangeListener)(dataRef, newData, currImmutableKeyName, currChangeListener);
     }
     prevRef.current = dataRef.current;
     dataRef.current = newData;
     setData(newData);
   }, []);
-  var externalPrepareContext = (0, _react.useCallback)(function (immerFn, settings) {
-    var _ref2 = settings || {},
-      immutableKeyName2 = _ref2.immutableKeyName,
-      changeListener2 = _ref2.changeListener,
-      addFn2 = _objectWithoutProperties(_ref2, _excluded2);
-    currChangeListener = changeListener2 || changeListener1;
-    currImmutableKeyName = immutableKeyName2 || immutableKeyName1;
-    currAddFn = _objectSpread(_objectSpread({}, currAddFn), addFn2);
+  var externalReSet = (0, _react.useCallback)(function (incoming, settings) {
+    if (settings) {
+      var _ref2 = settings || {},
+        immutableKeyName2 = _ref2.immutableKeyName,
+        changeListener2 = _ref2.changeListener,
+        addFn2 = _objectWithoutProperties(_ref2, _excluded2);
+      currImmutableKeyName = immutableKeyName2 || immutableKeyName1;
+      currAddFn = _objectSpread(_objectSpread({}, currAddFn), addFn2);
+      currChangeListener = changeListener2 || changeListener1;
+    }
     var newData = (0, _functions.setState)({
-      fn: immerFn,
+      fn: incoming,
       currRef: dataRef,
+      prevRef: prevRef,
       immutableName: currImmutableKeyName
     });
+    if (currChangeListener && typeof currChangeListener === "function") {
+      (0, _functions.triggerChangeListener)(dataRef, newData, currImmutableKeyName, currChangeListener);
+    }
     prevRef.current = dataRef.current;
     dataRef.current = newData;
     setData(newData);
-    return newData;
   }, []);
   var externalGet = function externalGet() {
     return dataRef === null || dataRef === void 0 ? void 0 : dataRef.current;
@@ -109,7 +113,7 @@ var usePxaState = exports.usePxaState = function usePxaState(initialState) {
       externalSet: externalSet,
       externalGet: externalGet,
       externalGetPrevious: externalGetPrevious,
-      externalPrepareContext: externalPrepareContext,
+      externalReSet: externalReSet,
       changeListener: currChangeListener
     });
   }, [dataRef === null || dataRef === void 0 ? void 0 : dataRef.current]);
