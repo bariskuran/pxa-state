@@ -10,8 +10,11 @@ This mini tool aims to address state management challenges in React. It was deve
 
 ### Demos
 
-[usePxaState](https://bit.ly/usePxaState "usePxaState")
-[usePxaContext](https://bit.ly/usePxaContext "usePxaContext")
+[usePxaState](https://codesandbox.io/s/usepxastate-slqw9c)
+
+[usePxaContext - setOutsideHooks](https://codesandbox.io/s/usepxacontext-static-zn9ghh)
+
+[usePxaContext - reSetInsideHooks](https://codesandbox.io/s/usepxacontext-dynamic-29yqm7)
 
 # Installing pxa-state
 
@@ -77,7 +80,7 @@ const Component = () => {
 
 #### Advanced Usage Example
 
-[usePxaState](https://bit.ly/usePxaState "usePxaState")
+[usePxaState](https://codesandbox.io/s/usepxastate-slqw9c)
 
 # Basic Usage of usePxaContext
 
@@ -141,7 +144,9 @@ const Component2 = () => {
 
 #### Advanced Usage Example
 
-[usePxaContext](https://bit.ly/usePxaContext "usePxaContext")
+[usePxaContext - setOutsideHooks](https://codesandbox.io/s/usepxacontext-static-zn9ghh)
+
+[usePxaContext - reSetInsideHooks](https://codesandbox.io/s/usepxacontext-dynamic-29yqm7)
 
 # Features
 
