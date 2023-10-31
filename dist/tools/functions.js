@@ -55,7 +55,10 @@ var immuToMu = exports.immuToMu = function immuToMu(data, IMMUTABLE_NAME) {
  * @returns immutable object
  */
 var muToImmu = exports.muToImmu = function muToImmu(data, IMMUTABLE_NAME) {
-  return typeOf(data) === "object" && Object.keys(data).length < 2 ? data[IMMUTABLE_NAME] : data;
+  var type = typeOf(data);
+  var keys = type === "object" ? Object.keys(data) : [];
+  var response = type === "object" && keys.length < 2 && keys.includes(IMMUTABLE_NAME) ? data[IMMUTABLE_NAME] : data;
+  return response;
 };
 
 /**
@@ -70,8 +73,8 @@ var freezedState = exports.freezedState = function freezedState(data) {
  * @description This function generates new data and saves it.
  * @returns immuData
  */
-var setState = exports.setState = function setState(settings) {
-  var _ref2 = settings || {},
+var setState = exports.setState = function setState(props) {
+  var _ref2 = props || {},
     fn = _ref2.fn,
     currRef = _ref2.currRef,
     immutableName = _ref2.immutableName;

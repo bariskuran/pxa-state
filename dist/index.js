@@ -15,12 +15,6 @@ Object.defineProperty(exports, "createPxaContext", {
     return _createPxaContext["default"];
   }
 });
-Object.defineProperty(exports, "createStore", {
-  enumerable: true,
-  get: function get() {
-    return _zustand.createStore;
-  }
-});
 Object.defineProperty(exports, "current", {
   enumerable: true,
   get: function get() {
@@ -81,9 +75,16 @@ Object.defineProperty(exports, "usePxaState", {
     return _usePxaState["default"];
   }
 });
+Object.defineProperty(exports, "useSetContext", {
+  enumerable: true,
+  get: function get() {
+    return _useSetContext["default"];
+  }
+});
 var _usePxaState = _interopRequireDefault(require("./usePxaState"));
-var _createPxaContext = _interopRequireDefault(require("./createPxaContext"));
 var _usePxaContext = _interopRequireDefault(require("./usePxaContext"));
+var _useSetContext = _interopRequireDefault(require("./useSetContext"));
+var _createPxaContext = _interopRequireDefault(require("./createPxaContext"));
 var _functions = require("./tools/functions");
 var _zustand = require("zustand");
 var _immer = require("immer");
