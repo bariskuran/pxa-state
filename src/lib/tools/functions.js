@@ -33,8 +33,13 @@ export const immuToMu = (data, IMMUTABLE_NAME) => (typeOf(data) === "object" ? d
  * @param {string} IMMUTABLE_NAME
  * @returns immutable object
  */
-export const muToImmu = (data, IMMUTABLE_NAME) =>
-    typeOf(data) === "object" && Object.keys(data).length < 2 ? data[IMMUTABLE_NAME] : data;
+export const muToImmu = (data, IMMUTABLE_NAME) => {
+    const type = typeOf(data);
+    const keys = type === "object" ? Object.keys(data) : [];
+    const response =
+        type === "object" && keys.length < 2 && keys.includes(IMMUTABLE_NAME) ? data[IMMUTABLE_NAME] : data;
+    return response;
+};
 
 /**
  * Freezed for immer
@@ -46,8 +51,8 @@ export const freezedState = (data) => freeze(typeof data === "function" ? data()
  * @description This function generates new data and saves it.
  * @returns immuData
  */
-export const setState = (settings) => {
-    const { fn, currRef, immutableName } = settings || {};
+export const setState = (props) => {
+    const { fn, currRef, immutableName } = props || {};
     const pro = () => produce(immuToMu(currRef?.current, immutableName), fn);
     const fre = () => freeze(fn);
     const newData = typeof fn === "function" ? pro() : fre();

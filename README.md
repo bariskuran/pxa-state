@@ -63,7 +63,7 @@ const Component = () => {
 			no: d.no + 1,
 			str: "new str",
 			"nested.obj.prop": true,
-		})
+		}))
 	}
 
 // result: {
@@ -87,16 +87,13 @@ const Component = () => {
 This function is used instead of _useContext_ or _Redux_ or similar.
 
 ```js
-import { createPxaContext, usePxaContext } from "pxa-state";
+import { createPxaContext, usePxaContext, useSetContext } from "pxa-state";
 ```
 
 You can create the context outside of a React Component:
 
 ```js
-const globalContext = createPxaContext({
-    no: 1,
-    str: "str",
-});
+const globalContext = createPxaContext(initialValue, settings);
 //...
 ```
 
@@ -106,14 +103,13 @@ Or, you can create the context inside a React Component:
 const globalContext = createPxaContext();
 
 const Component1 = () => {
-	const state = usePxaContext(globalContext, (s) => [s.reSet]);
+	useSetContext(globalContext, async () => {
+    // do smth in here... for example make an api call...
+    // const response = await fetch("https://randomuser.me/api/");
+    // const data = await response.json();
 
-	useEffect(()=>{
-		state.reSet({
-    		no: 1,
-    		str: "str",
-		})
-	},[])
+    return [initialValue, settings];
+  });
 
 //...
 ```
@@ -128,7 +124,7 @@ const Component2 = () => {
 			no: d.no + 1,
 			str: "new str",
 			"nested.obj.prop": true,
-		})
+		}))
 	}
 
 // result: {
@@ -274,14 +270,16 @@ immerSet(draft=>{
 If you need to reSet state or context, you can use reSet to add new functions to your context.
 
 ```js
-reSet(initialValue, newSettings);
+reSet(initialValue, settings);
 ```
 
 # Api
 
 > const state = usePxaState(**initialValue**,**stateSettings**);
 
-> const globalContext = createPxaContext(**initialValue**,**stateSettings**))
+> const globalContext = createPxaContext(**initialValue**,**stateSettings**)
+
+> useSetContext(**contextFile**, **initialValue**,**stateSettings**)
 
 | initialValue | any - optional                                                                                    |
 | ------------ | ------------------------------------------------------------------------------------------------- |
@@ -313,6 +311,10 @@ import { useImmer, useImmerReducer } from "pxa-state";
 ```
 
 # Updates
+
+## 0.0.44
+
+-   useSetContext method is added.
 
 ## 0.0.42
 

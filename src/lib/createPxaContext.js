@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { setState, findDifferences, getValueByPath, triggerChangeListener } from "./tools/functions";
+import { setState, triggerChangeListener } from "./tools/functions";
 import { createPxaClass } from "./tools/createPxaClass";
 
 const createPxaContext = (initialValue, settings) => {
