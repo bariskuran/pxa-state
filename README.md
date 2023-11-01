@@ -2,6 +2,10 @@
 
 [![npm version](https://badge.fury.io/js/pxa-state.svg)](//npmjs.com/package/pxa-state)
 
+# Recommendation
+
+This library is being developed and tested day by day. I recommend waiting until version 0.1.0 or keeping track of continuous updates.
+
 # Introduction
 
 **pxa-state** is a React state management tool that combines the functionalities of zustand and immer libraries. Additionally, it facilitates usage to some extent by introducing new set and call methods. It can operate both local components and global components.
@@ -136,6 +140,22 @@ const Component2 = () => {
 //		}
 //	}
 //}
+```
+
+Also, you can call nested values as well. But keep in mind, you should name it level1's key name at the call.
+
+```js
+const { level1 } = usePxaContext(globalContext, (s) => [s.level1.level2.level31, s.level1.level2.level32]);
+
+// result: {
+// level1: {
+//	level2:{
+// 		level31:any,
+// 		level32:any,
+// }}
+
+// At this example, you can reach deep nested values like this:
+<div>{level1?.level2?.level31}</div>;
 ```
 
 #### Advanced Usage Example
@@ -312,13 +332,17 @@ import { useImmer, useImmerReducer } from "pxa-state";
 
 # Updates
 
+## 0.0.47
+
+-   usePxaContext is updated. Now a nested call can be used.
+
 ## 0.0.44
 
--   useSetContext method is added.
+-   useSetContext method is added. Using **reSet** is much more easier now.
 
 ## 0.0.42
 
--   usePrepareContext is removed. Instead use _reSet_ method.
+-   usePrepareContext is removed. Instead use **reSet** method.
 -   previousValues are added to changeListener.
 -   Couple of bug fixes.
 -   CodeSandBox demos are added to README.

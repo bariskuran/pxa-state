@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { usePxaContext } from "pxa-state";
+import usePxaContext from "./usePxaContext";
 
 const useSetContext = (context, incomingFunction) => {
     const { reSet } = usePxaContext(context, (s) => [s.reSet]);
