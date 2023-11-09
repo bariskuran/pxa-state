@@ -316,6 +316,11 @@ reSet(initialValue, settings);
 > const **argObj** = usePxaContext(**contextFile**, **argFunction**)
 > const {**val1, val2, fn1, fn2, set**} = usePxaContext(**contextFile**, **s=>[s.val1,sval2,s.fn1,s.fn2, s.set]**)
 
+OR alternatively,
+
+> const **argObj** = usePxaContext(**contextFile**, **argStr**)
+> const {**val1, val2, fn1, fn2, set**} = usePxaContext(**contextFile**, **`val1,val2,fn1,fn2,set`**)
+
 | argFunction | function - mandatory                                                                                               |
 | ----------- | ------------------------------------------------------------------------------------------------------------------ |
 |             | argFunction gets desired values from state. To use pxa-state effectively, you should only fetch the data you need. |
@@ -331,6 +336,17 @@ import { useImmer, useImmerReducer } from "pxa-state";
 ```
 
 # Updates
+
+## 0.0.48
+
+-   usePxaContext is updated. Now, string keys is an option to function keys.
+
+```js
+usePxaContext(contextFile, `level1,level2.level21,level3`);
+usePxaContext(contextFile, (s) => [s.level1, s.level2.level21, s.level3]);
+```
+
+-   Bug fix at get and getPrevious methods.
 
 ## 0.0.47
 

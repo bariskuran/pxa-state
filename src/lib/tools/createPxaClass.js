@@ -35,10 +35,10 @@ export const createPxaClass = (states) => {
             externalReSet(incoming, settings);
         };
         get = () => {
-            externalGet();
+            return externalGet();
         };
         getPrevious = () => {
-            externalGetPrevious();
+            return externalGetPrevious();
         };
     }
 

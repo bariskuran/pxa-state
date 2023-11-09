@@ -1,6 +1,6 @@
 {
-    "main2": "src/lib/index.js",
-    "main": "dist/index.js",
+    "main": "src/lib/index.js",
+    "main2": "dist/index.js",
     "name": "pxa-state",
     "version": "0.0.47",
     "keywords": [
@@ -57,7 +57,8 @@
         "jest": "^29.7.0",
         "jest-environment-jsdom": "^29.7.0",
         "prettier": "^3.0.3",
-        "react-dom": "^18.2.0",
+        "react": "^17.0.0",
+        "react-dom": "^17.0.0",
         "react-test-renderer": "^18.2.0"
     }
 }
