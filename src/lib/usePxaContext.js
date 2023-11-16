@@ -30,8 +30,8 @@ const usePxaContext = (context, fnOrStr = (s) => [s.set]) => {
             );
             if (value !== undefined) assignValueToObject(obj, innerKeys, value);
         } else {
-            // const value = context((s) => s[key]);
-            // if (value !== undefined) obj[key] = value;
+            const value = context((s) => s[key]);
+            if (value !== undefined) obj[key] = value;
         }
     });
     return obj;

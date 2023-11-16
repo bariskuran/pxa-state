@@ -50,10 +50,10 @@ var createPxaClass = exports.createPxaClass = function createPxaClass(states) {
       externalReSet(incoming, settings);
     });
     _defineProperty(this, "get", function () {
-      externalGet();
+      return externalGet();
     });
     _defineProperty(this, "getPrevious", function () {
-      externalGetPrevious();
+      return externalGetPrevious();
     });
     (0, _functions.typeOf)(value) === "object" ? Object.entries(value).forEach(function (_ref2) {
       var _ref3 = _slicedToArray(_ref2, 2),

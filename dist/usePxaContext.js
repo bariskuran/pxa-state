@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports["default"] = void 0;
+var _functions = require("./tools/functions");
+var _reactDom = require("react-dom");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -12,23 +14,27 @@ function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symb
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var usePxaContext = function usePxaContext(context) {
-  var fn = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (s) {
+  var fnOrStr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (s) {
     return [s.set];
   };
-  // let FN_STR = fn.toString();
-  // if (FN_STR.startsWith("function")) FN_STR = convertFunctionString(FN_STR);
-  // const MATCH = FN_STR.charAt(0) === "(" ? FN_STR.match(/\((\w+)\)=>/) : FN_STR.match(/(\w+)=>/);
-  // const STATE_KEY = MATCH ? MATCH[1] : "s";
-  // const regex = new RegExp(`${STATE_KEY}\\.(\\w+)`, "g");
-  // const keys = [...FN_STR.matchAll(regex)].map((match) => match[1]);
-  var FN_STR = fn.toString();
-  if (FN_STR.startsWith("function")) FN_STR = convertFunctionString(FN_STR);
-  var MATCH = FN_STR.match(/\(([^)]+)\)\s*=>/);
-  var STATE_KEY = MATCH ? MATCH[1] : "s";
-  var regex = new RegExp("".concat(STATE_KEY, "\\.([\\w.]+)"), "g");
-  var keys = _toConsumableArray(FN_STR.matchAll(regex)).map(function (match) {
-    return match[1];
-  });
+  var type = (0, _functions.typeOf)(fnOrStr);
+  var keys;
+  if (type === "function") {
+    var FN_STR = fnOrStr.toString();
+    if (FN_STR.startsWith("function")) FN_STR = convertFunctionString(FN_STR);
+    var MATCH = FN_STR.match(/\(([^)]+)\)\s*=>/);
+    var STATE_KEY = MATCH ? MATCH[1] : "s";
+    var regex = new RegExp("".concat(STATE_KEY, "\\.([\\w.]+)"), "g");
+    keys = _toConsumableArray(FN_STR.matchAll(regex)).map(function (match) {
+      return match[1];
+    });
+  } else if (type === "string") {
+    keys = fnOrStr === null || fnOrStr === void 0 ? void 0 : fnOrStr.split(",").map(function (it) {
+      return it.trim();
+    });
+  } else {
+    throw new Error("Unknown type for usePxaContext");
+  }
   var obj = {};
   keys.forEach(function (key) {
     if (key.includes(".")) {
@@ -41,10 +47,12 @@ var usePxaContext = function usePxaContext(context) {
       }));
       if (value !== undefined) assignValueToObject(obj, innerKeys, value);
     } else {
-      var _value = context(function (s) {
-        return s[key];
+      (0, _reactDom.unstable_batchedUpdates)(function () {
+        var value = context(function (s) {
+          return s[key];
+        });
+        if (value !== undefined) obj[key] = value;
       });
-      if (_value !== undefined) obj[key] = _value;
     }
   });
   return obj;

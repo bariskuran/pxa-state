@@ -107,13 +107,13 @@ Or, you can create the context inside a React Component:
 const globalContext = createPxaContext();
 
 const Component1 = () => {
-	useSetContext(globalContext, async () => {
+	const state = useSetContext(globalContext, async () => {
     // do smth in here... for example make an api call...
     // const response = await fetch("https://randomuser.me/api/");
     // const data = await response.json();
 
     return [initialValue, settings];
-  });
+  }, (s) => [s.no, s.str, s.set]);
 
 //...
 ```
@@ -299,7 +299,19 @@ reSet(initialValue, settings);
 
 > const globalContext = createPxaContext(**initialValue**,**stateSettings**)
 
-> useSetContext(**contextFile**, **initialValue**,**stateSettings**)
+| initialValue | any - optional                                                                                    |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+|              | **\*initialValue** can be any type. Mutable or immutable. Excluding a function type.              |
+|              | You don't need to set initialValue at the beginning and if you do, you can change its type later. |
+| ⚠️           | initialValue can not be a function.                                                               |
+
+| stateSettings          | object - optional                                                                                                                                                                                                                                                                  |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| immutableKeyName       | **should be a string**. usePxaState converts immutable data to mutable. By this way you can handle string, boolean etc. Immutable types uses immutableKeyName to place.Immutable types are located under the immutableKeyName prop within the state. The default value is ‘value’. |
+| changeListener         | **should be a function**. If anything is changed in the state, changeListener function is triggerred. changeListener function gets 3 props: (keys, latestValues, previousValues)=>{}                                                                                               |
+| … additional functions | You can add your additional functions inside stateSettings. pxaState pushes existing state first, then other args. Check out examples above.                                                                                                                                       |
+
+> useSetContext(**contextFile**, **setFunction**,**argFunction**)
 
 | initialValue | any - optional                                                                                    |
 | ------------ | ------------------------------------------------------------------------------------------------- |

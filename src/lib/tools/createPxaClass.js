@@ -23,16 +23,16 @@ export const createPxaClass = (states) => {
         }
 
         // Default functions
-        immerSet = (incoming) => {
-            externalSet(incoming);
+        immerSet = (values) => {
+            externalSet(values);
         };
-        set = (incoming) => {
+        set = (values) => {
             const curr = immuToMu(externalGet(), IMMUTABLE_NAME);
-            const setX = useSetX(curr, incoming);
+            const setX = useSetX(curr, values);
             externalSet(setX);
         };
-        reSet = (incoming, settings) => {
-            externalReSet(incoming, settings);
+        reSet = (values, settings) => {
+            externalReSet(values, settings);
         };
         get = () => {
             return externalGet();
