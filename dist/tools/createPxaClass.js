@@ -38,16 +38,16 @@ var createPxaClass = exports.createPxaClass = function createPxaClass(states) {
     var _this = this;
     _classCallCheck(this, PxaState);
     // Default functions
-    _defineProperty(this, "immerSet", function (incoming) {
-      externalSet(incoming);
+    _defineProperty(this, "immerSet", function (values) {
+      externalSet(values);
     });
-    _defineProperty(this, "set", function (incoming) {
+    _defineProperty(this, "set", function (values) {
       var curr = (0, _functions.immuToMu)(externalGet(), IMMUTABLE_NAME);
-      var setX = (0, _useSetX.useSetX)(curr, incoming);
+      var setX = (0, _useSetX.useSetX)(curr, values);
       externalSet(setX);
     });
-    _defineProperty(this, "reSet", function (incoming, settings) {
-      externalReSet(incoming, settings);
+    _defineProperty(this, "reSet", function (values, settings) {
+      externalReSet(values, settings);
     });
     _defineProperty(this, "get", function () {
       return externalGet();
