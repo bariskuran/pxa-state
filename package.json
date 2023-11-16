@@ -2,7 +2,7 @@
     "main": "src/lib/index.js",
     "main2": "dist/index.js",
     "name": "pxa-state",
-    "version": "0.0.48-alpha.1",
+    "version": "0.0.48",
     "keywords": [
         "zustand",
         "immer",
